@@ -14,7 +14,7 @@ export const RoleSelection = ({ map, onSelection }: RoleSelectionProps) => {
         className="hidden md:flex w-5/6 mx-auto flex-col gap-8 relative"
         style={{
           aspectRatio: 6 / 2,
-          backgroundImage: `url(/maps/${map}.png)`,
+          backgroundImage: `url(https://raw.githubusercontent.com/Meierschlumpf/valorant-election-tool/master/public/maps/${map}.png)`,
           backgroundPosition: "center",
           backgroundSize: "cover",
           filter: "blur(100)",
@@ -50,7 +50,7 @@ export const RoleSelection = ({ map, onSelection }: RoleSelectionProps) => {
         className="flex md:hidden w-5/6 mx-auto flex-col gap-8 relative"
         style={{
           aspectRatio: 6 / 2,
-          backgroundImage: `url(/maps/${map}.png)`,
+          backgroundImage: `url(https://raw.githubusercontent.com/Meierschlumpf/valorant-election-tool/master/public/maps/${map}.png)`,
           backgroundPosition: "center",
           backgroundSize: "cover",
           filter: "blur(100)",

@@ -35,7 +35,7 @@ export const MapCard = ({ map, disabled, selected, selectionIndex, voter, onClic
     >
       <div
         style={{
-          backgroundImage: `url(/maps/${map}.png)`,
+          backgroundImage: `url(https://raw.githubusercontent.com/Meierschlumpf/valorant-election-tool/master/public/maps/${map}.png)`,
           backgroundPosition: "center",
           backgroundSize: "cover",
           filter: disabled ? "grayscale(0.9)" : undefined,
