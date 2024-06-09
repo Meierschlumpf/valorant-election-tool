@@ -35,13 +35,13 @@ export default async function StreamMapBan({ params, searchParams }: Props) {
   const type = tokens?.tokenTeam1 === searchParams.token ? "team1" : "team2";
 
   return (
-    <div className="w-screen h-screen bg-gray-950 flex items-center justify-center select-none">
-      <div className="absolute top-2 h-16 flex mx-auto left-0 right-0 w-max">
-        <div className="text-white w-96 text-3xl flex justify-end items-center p-4 font-medium" style={{ color: byFirstColor }}>
+    <div className="w-screen min-h-screen md:h-screen bg-gray-950 flex items-center justify-center select-none">
+      <div className="absolute top-2 h-16 flex mx-auto left-0 right-0 w-max max-w-full">
+        <div className="text-white w-96 text-lg md:text-3xl flex justify-end items-center p-4 font-medium" style={{ color: byFirstColor }}>
           {composition.team1.name}
         </div>
-        <div className="flex justify-center items-center text-2xl text-white w-16">vs.</div>
-        <div className=" text-white text-3xl w-96 flex justify-start items-center p-4 font-medium" style={{ color: bySecondColor }}>
+        <div className="flex justify-center items-center text-sm md:text-2xl text-white w-16">vs.</div>
+        <div className=" text-white text-lg md:text-3xl w-96 flex justify-start items-center p-4 font-medium" style={{ color: bySecondColor }}>
           {composition.team2.name}
         </div>
       </div>

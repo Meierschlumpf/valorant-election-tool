@@ -63,21 +63,28 @@ export const MapList = ({ selections, voteState, section, next, roles, firstTeam
   };
 
   return (
-    <div className="flex justify-center flex-col items-center gap-4">
-      <div className="w-5/6 flex justify-center">
-        <div className="w-3/4 flex gap-4  flex-nowrap">
-          {valorantMaps.slice(0, 3).map((map) => (
+    <>
+      <div className="hidden md:flex justify-center flex-col items-center gap-4">
+        <div className="w-5/6 flex justify-center">
+          <div className="w-3/4 flex gap-4  flex-nowrap">
+            {valorantMaps.slice(0, 3).map((map) => (
+              <MapCard key={map} {...createMapCardPropsFor(map)} />
+            ))}
+          </div>
+        </div>
+
+        <div className="flex gap-4 w-5/6 flex-nowrap">
+          {valorantMaps.slice(3).map((map) => (
             <MapCard key={map} {...createMapCardPropsFor(map)} />
           ))}
         </div>
       </div>
-
-      <div className="flex gap-4 w-5/6 flex-nowrap">
-        {valorantMaps.slice(3).map((map) => (
+      <div className="flex md:hidden justify-center flex-wrap items-center gap-4 px-8 md:px-0 mb-8 md:mb-0">
+        {valorantMaps.map((map) => (
           <MapCard key={map} {...createMapCardPropsFor(map)} />
         ))}
       </div>
-    </div>
+    </>
   );
 };
 

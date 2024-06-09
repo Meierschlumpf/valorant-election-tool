@@ -84,10 +84,10 @@ export const MapSelection = ({ type, composition }: MapSelectionProps) => {
   const showRoleSelection = (section === "select-role-first" && type === "team1") || (section === "select-role-second" && type === "team2");
 
   return (
-    <div className="flex w-full flex-col gap-8">
+    <div className="flex w-full flex-col gap-8 mt-16 md:mt-0">
       <div className="flex flex-col gap-2 text-center">
-        <h1 className="text-white text-5xl font-medium">{title(section)}</h1>
-        <p className="text-white text-xl">{subtitle(section, composition.team1.name, composition.team2.name)}</p>
+        <h1 className="text-white text-xl md:text-5xl font-medium">{title(section)}</h1>
+        <p className="text-white text-sm md:text-xl">{subtitle(section, composition.team1.name, composition.team2.name)}</p>
       </div>
 
       {type === "preview" || !showRoleSelection ? (
