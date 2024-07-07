@@ -37,19 +37,19 @@ export default async function NewComposition({ searchParams }: Props) {
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <label htmlFor="name">Name</label>
-            <input id="name" name="name" className="border" />
+            <input required minLength={3} id="name" name="name" className="border" />
           </div>
 
           <div className="flex flex-col gap-1">
             <label htmlFor="team-a">Team A</label>
-            <select id="team-a" name="teamA" className="border" defaultValue={team.id}>
+            <select required id="team-a" name="teamA" className="border" defaultValue={team.id}>
               <option value={team.id}>{team.name}</option>
             </select>
           </div>
 
           <div className="flex flex-col gap-1">
             <label htmlFor="team-b">Team B</label>
-            <select id="team-b" name="teamB" className="border">
+            <select required id="team-b" name="teamB" className="border">
               {otherTeams.map((team) => (
                 <option key={team.id} value={team.id}>
                   {team.name}
@@ -60,7 +60,7 @@ export default async function NewComposition({ searchParams }: Props) {
 
           <div className="flex flex-col gap-1">
             <label htmlFor="composition-type">Typ</label>
-            <select id="composition-type" name="type" className="border">
+            <select required id="composition-type" name="type" className="border">
               <option value="normal">Normal</option>
               <option value="final">Finale</option>
             </select>

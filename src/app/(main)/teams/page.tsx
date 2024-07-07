@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { db } from "../../db";
+import { db } from "../../../db";
 import { deleteTeamAction } from "./new/action";
 import { checkAuthAsync } from "@/checkAuth";
 
