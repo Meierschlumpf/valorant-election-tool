@@ -8,7 +8,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
-const newSchema = z.string().min(1).max(16).trim();
+const newSchema = z.string().min(1).max(64).trim();
 
 export const createTeamAction = async (formData: FormData) => {
   await checkAuthAsync();
