@@ -11,7 +11,10 @@ import usePartySocket from "partysocket/react";
 import { useState } from "react";
 import SuperJSON from "superjson";
 import { z } from "zod";
-import { fromServerMessageSchema, roleMessageSchema } from "../../../../../../partykit/messages";
+import {
+  fromServerMessageSchema,
+  roleMessageSchema,
+} from "../../../../../../partykit/messages";
 
 interface MapSelectionProps {
   composition: Composition;
@@ -19,10 +22,14 @@ interface MapSelectionProps {
 }
 
 export const MapSelection = ({ type, composition }: MapSelectionProps) => {
-  const [sectionIndex, setSectionIndex] = useState(getCurrentSectionIndex(composition));
+  const [sectionIndex, setSectionIndex] = useState(
+    getCurrentSectionIndex(composition)
+  );
   const section = mapTypeSections[composition.type][sectionIndex]!;
   const searchParams = useSearchParams();
-  const isMyTurn = (type === "team1" && section.includes("first")) || (type === "team2" && section.includes("second"));
+  const isMyTurn =
+    (type === "team1" && section.includes("first")) ||
+    (type === "team2" && section.includes("second"));
   const next = () =>
     setSectionIndex((i) => {
       if (mapTypeSections[composition.type].length - 1 === i) return i;
@@ -32,9 +39,18 @@ export const MapSelection = ({ type, composition }: MapSelectionProps) => {
   const [votes, setVotes] = useState<Vote[]>(composition.mapStates);
   const [roles, setRoles] = useState<Role[]>(
     composition.mapStates
-      .filter((mapState) => mapState.attackerId !== null && mapState.kind === "selection")
+      .filter(
+        (mapState) =>
+          mapState.attackerId !== null && mapState.kind === "selection"
+      )
       .map((mapState) => ({
-        role: (mapState.by === "first" && mapState.attackerId === composition.team1Id) || (mapState.by === "second" && mapState.attackerId === composition.team2Id) ? "attack" : "defense",
+        role:
+          (mapState.by === "first" &&
+            mapState.attackerId === composition.team1Id) ||
+          (mapState.by === "second" &&
+            mapState.attackerId === composition.team2Id)
+            ? "attack"
+            : "defense",
         map: mapState.map,
         by: mapState.by,
       }))
@@ -65,7 +81,9 @@ export const MapSelection = ({ type, composition }: MapSelectionProps) => {
     host: process.env.NEXT_PUBLIC_PARTYKIT_HOST,
     room: `composition-${composition.id}`,
     onMessage(event) {
-      const result = fromServerMessageSchema.safeParse(SuperJSON.parse(event.data));
+      const result = fromServerMessageSchema.safeParse(
+        SuperJSON.parse(event.data)
+      );
       if (!result.success) return;
 
       switch (result.data.type) {
@@ -81,13 +99,24 @@ export const MapSelection = ({ type, composition }: MapSelectionProps) => {
 
   const selections = votes.filter((vote) => vote.kind === "selection");
   const lastVote = votes.at(-1);
-  const showRoleSelection = (section === "select-role-first" && type === "team1") || (section === "select-role-second" && type === "team2");
+  const showRoleSelection =
+    (section === "select-role-first" && type === "team1") ||
+    (section === "select-role-second" && type === "team2");
 
   return (
     <div className="flex w-full flex-col gap-8 mt-16 md:mt-0">
       <div className="flex flex-col gap-2 text-center">
-        <h1 className="text-white text-xl md:text-5xl font-medium">{title(section)}</h1>
-        <p className="text-white text-sm md:text-xl">{subtitle(section, composition.team1.name, composition.team2.name)}</p>
+        <h1 className="text-white text-xl md:text-5xl font-medium">
+          {title(section)}
+        </h1>
+        <p className="text-white text-sm md:text-xl">
+          {subtitle(
+            section,
+            composition.team1.name,
+            composition.team2.name,
+            isMyTurn
+          )}
+        </p>
       </div>
 
       {type === "preview" || !showRoleSelection ? (
@@ -117,7 +146,10 @@ export const MapSelection = ({ type, composition }: MapSelectionProps) => {
             const newRole = {
               role,
               map: lastVote.map,
-              by: lastVote.by === "first" ? ("second" as const) : ("first" as const), // Revert as the oposite time has voted for the map
+              by:
+                lastVote.by === "first"
+                  ? ("second" as const)
+                  : ("first" as const), // Revert as the oposite time has voted for the map
             };
 
             socket.send(
@@ -159,43 +191,51 @@ const title = (section: Section) => {
   }
 };
 
-const subtitle = (section: Section, firstTeam: string, secondTeam: string) => {
+const subtitleTeam = (name: string, color: string, isMyTurn: boolean) => {
+  if (!isMyTurn)
+    return (
+      <span>
+        TEAM <span style={{ color }}>{name}</span>
+      </span>
+    );
+  return <span style={{ color }}>DEIN TEAM</span>;
+};
+
+const subtitle = (
+  section: Section,
+  firstTeam: string,
+  secondTeam: string,
+  isMyTurn: boolean
+) => {
   switch (section) {
     case "ban-first":
       return (
-        <>
-          TEAM <span style={{ color: byFirstColor }}>{firstTeam}</span> BANNT EINE MAP
-        </>
+        <>{subtitleTeam(firstTeam, byFirstColor, isMyTurn)} BANNT EINE MAP</>
       );
     case "ban-second":
       return (
-        <>
-          TEAM <span style={{ color: bySecondColor }}>{secondTeam}</span> BANNT EINE MAP
-        </>
+        <>{subtitleTeam(secondTeam, bySecondColor, isMyTurn)} BANNT EINE MAP</>
       );
     case "select-first":
       return (
-        <>
-          TEAM <span style={{ color: byFirstColor }}>{firstTeam}</span> WÄHLT EINE MAP
-        </>
+        <>{subtitleTeam(firstTeam, byFirstColor, isMyTurn)} WÄHLT EINE MAP</>
       );
     case "select-second":
       return (
-        <>
-          TEAM <span style={{ color: bySecondColor }}>{secondTeam}</span> WÄHLT EINE MAP
-        </>
+        <>{subtitleTeam(secondTeam, bySecondColor, isMyTurn)} WÄHLT EINE MAP</>
       );
 
     case "select-role-first":
       return (
         <>
-          TEAM <span style={{ color: byFirstColor }}>{firstTeam}</span> WÄHLT DIE ROLLE
+          {subtitleTeam(firstTeam, byFirstColor, isMyTurn)} WÄHLT DIE STARTROLLE
         </>
       );
     case "select-role-second":
       return (
         <>
-          TEAM <span style={{ color: bySecondColor }}>{secondTeam}</span> WÄHLT DIE ROLLE
+          {subtitleTeam(secondTeam, bySecondColor, isMyTurn)} WÄHLT DIE
+          STARTROLLE
         </>
       );
     case "ready":
