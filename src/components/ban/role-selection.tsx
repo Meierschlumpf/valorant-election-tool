@@ -20,27 +20,44 @@ export const RoleSelection = ({ map, onSelection }: RoleSelectionProps) => {
           filter: "blur(100)",
         }}
       >
-        <div className="flex flex-nowrap">
-          <div className="p-16 aspect-square w-full">
-            <button onClick={() => onSelection("defense")} className="bg-gray-950 bg-opacity-50 w-full h-full rounded-xl flex flex-col justify-center items-center">
+        <div className="flex flex-nowrap w-full justify-between">
+          <div className="p-16 aspect-square w-[40%]">
+            <button
+              onClick={() => onSelection("defense")}
+              className="bg-gray-950 bg-opacity-50 w-full h-full rounded-xl flex flex-col justify-center items-center"
+            >
               <IconShield color={defenseColor} size="50%" />
-              <p style={{ color: defenseColor }} className="text-xl font-bold uppercase">
+              <p
+                style={{ color: defenseColor }}
+                className="text-xl font-bold uppercase"
+              >
                 Verteidigung
               </p>
             </button>
           </div>
-          <div className="bg-transparent bg-opacity-50 aspect-square w-full"></div>
-          <div className="p-16 aspect-square w-full">
-            <button onClick={() => onSelection("attack")} className="bg-gray-950 bg-opacity-50 w-full h-full rounded-xl flex flex-col justify-center items-center">
+          <div className="p-16 aspect-square w-[40%]">
+            <button
+              onClick={() => onSelection("attack")}
+              className="bg-gray-950 bg-opacity-50 w-full h-full rounded-xl flex flex-col justify-center items-center"
+            >
               <IconSword color={attackColor} size="50%" />
-              <p style={{ color: attackColor }} className="text-xl font-bold uppercase">
+              <p
+                style={{ color: attackColor }}
+                className="text-xl font-bold uppercase"
+              >
                 Angriff
               </p>
             </button>
           </div>
         </div>
         <div className="absolute text-center text-5xl uppercase text-white w-full bottom-4 font-semibold">
-          <span style={{ boxShadow: "0px 0px 15px 5px rgba(0, 0, 0, 0.5)", backgroundColor: "rgba(0, 0, 0, 0.5)" }} className="rounded p-1">
+          <span
+            style={{
+              boxShadow: "0px 0px 15px 5px rgba(0, 0, 0, 0.5)",
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+            }}
+            className="rounded p-1"
+          >
             {map}
           </span>
         </div>
@@ -57,24 +74,42 @@ export const RoleSelection = ({ map, onSelection }: RoleSelectionProps) => {
         }}
       >
         <div className="absolute text-center text-5xl uppercase text-white w-full bottom-4 font-semibold">
-          <span style={{ boxShadow: "0px 0px 15px 5px rgba(0, 0, 0, 0.5)", backgroundColor: "rgba(0, 0, 0, 0.5)" }} className="rounded p-1">
+          <span
+            style={{
+              boxShadow: "0px 0px 15px 5px rgba(0, 0, 0, 0.5)",
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+            }}
+            className="rounded p-1"
+          >
             {map}
           </span>
         </div>
       </div>
       <div className="flex md:hidden flex-nowrap">
         <div className="aspect-square w-1/2">
-          <button onClick={() => onSelection("defense")} className="bg-gray-950 bg-opacity-50 w-full h-full rounded-xl flex flex-col justify-center items-center">
+          <button
+            onClick={() => onSelection("defense")}
+            className="bg-gray-950 bg-opacity-50 w-full h-full rounded-xl flex flex-col justify-center items-center"
+          >
             <IconShield color={defenseColor} size="50%" />
-            <p style={{ color: defenseColor }} className="text-xl font-bold uppercase">
+            <p
+              style={{ color: defenseColor }}
+              className="text-xl font-bold uppercase"
+            >
               Verteidigung
             </p>
           </button>
         </div>
         <div className="aspect-square w-1/2">
-          <button onClick={() => onSelection("attack")} className="bg-gray-950 bg-opacity-50 w-full h-full rounded-xl flex flex-col justify-center items-center">
+          <button
+            onClick={() => onSelection("attack")}
+            className="bg-gray-950 bg-opacity-50 w-full h-full rounded-xl flex flex-col justify-center items-center"
+          >
             <IconSword color={attackColor} size="50%" />
-            <p style={{ color: attackColor }} className="text-xl font-bold uppercase">
+            <p
+              style={{ color: attackColor }}
+              className="text-xl font-bold uppercase"
+            >
               Angriff
             </p>
           </button>

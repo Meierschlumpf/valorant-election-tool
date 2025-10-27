@@ -1,5 +1,5 @@
 import { ValorantMap, valorantMaps } from "@/app/maps";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Vote, Role, Section } from "./types";
 import { MapCard } from "./map-card";
 import PartySocket from "partysocket";
@@ -7,6 +7,8 @@ import SuperJSON from "superjson";
 import { useSearchParams } from "next/navigation";
 import { z } from "zod";
 import { voteMessageSchema } from "../../../partykit/messages";
+import { Group, Modal, Stack } from "@mantine/core";
+import "@mantine/core/styles.css";
 
 interface MapListProps {
   voteState: [Vote[], Dispatch<SetStateAction<Vote[]>>];
@@ -22,8 +24,55 @@ interface MapListProps {
   isMyTurn: boolean;
 }
 
-export const MapList = ({ selections, voteState, section, next, roles, firstTeam, secondTeam, type, compositionId, socket, isMyTurn }: MapListProps) => {
+const modalRecord: Record<
+  "ban" | "selection",
+  { title: string; content: (map: string) => JSX.Element; button: string }
+> = {
+  ban: {
+    title: "Map bannen?",
+    content: (map: string) => (
+      <p>
+        Bist du sicher, dass du die Map <strong>{capitalize(map)}</strong>{" "}
+        bannen möchtest?
+      </p>
+    ),
+    button: "Bannen",
+  },
+  selection: {
+    title: "Map auswählen?",
+    content: (map: string) => (
+      <p>
+        Bist du sicher, dass du die Map <strong>{capitalize(map)}</strong>{" "}
+        auswählen möchtest?
+      </p>
+    ),
+    button: "Auswählen",
+  },
+};
+
+const capitalize = (s: string) => {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+};
+
+export const MapList = ({
+  selections,
+  voteState,
+  section,
+  next,
+  roles,
+  firstTeam,
+  secondTeam,
+  type,
+  compositionId,
+  socket,
+  isMyTurn,
+}: MapListProps) => {
   const [votes, setVotes] = voteState;
+  const [modalProps, setModalProps] = useState<{
+    type: "ban" | "selection";
+    map: ValorantMap;
+    onConfirm: () => Promise<void>;
+  } | null>(null);
   const searchParams = useSearchParams();
 
   const createMapCardPropsFor = (map: ValorantMap) => {
@@ -36,23 +85,34 @@ export const MapList = ({ selections, voteState, section, next, roles, firstTeam
         const vote = generateVoteFromSectionAndMapSelection(map, section);
         if (!vote) return;
 
-        socket.send(
-          SuperJSON.stringify({
-            compositionId,
-            token,
-            type: "vote",
-            data: vote,
-          } satisfies z.infer<typeof voteMessageSchema>)
-        );
-        setVotes((votes) => {
-          return votes.concat(vote);
+        setModalProps({
+          type: vote.kind,
+          map: map,
+          onConfirm() {
+            return new Promise((resolve) => {
+              socket.send(
+                SuperJSON.stringify({
+                  compositionId,
+                  token,
+                  type: "vote",
+                  data: vote,
+                } satisfies z.infer<typeof voteMessageSchema>)
+              );
+              setVotes((votes) => {
+                return votes.concat(vote);
+              });
+              next();
+              resolve();
+            });
+          },
         });
-        next();
       },
       map,
       disabled: votes.some((vote) => vote.map === map && vote.kind === "ban"),
       cursor: isMyTurn ? undefined : ("default" as const),
-      selected: votes.some((vote) => vote.map === map && vote.kind === "selection"),
+      selected: votes.some(
+        (vote) => vote.map === map && vote.kind === "selection"
+      ),
       voter: votes.find((vote) => vote.map === map)?.by,
       selectionIndex: selections.findIndex((vote) => vote.map === map),
       firstTeam,
@@ -64,6 +124,38 @@ export const MapList = ({ selections, voteState, section, next, roles, firstTeam
 
   return (
     <>
+      {modalProps !== null && (
+        <Modal
+          title={modalRecord[modalProps.type].title}
+          opened
+          onClose={() => setModalProps(null)}
+        >
+          <Stack>
+            {modalRecord[modalProps.type].content(modalProps.map)}
+            <Group justify="space-between">
+              <button
+                className="bg-gray-600 px-4 py-1 rounded-xl flex flex-col justify-center items-center"
+                onClick={() => setModalProps(null)}
+              >
+                <p className="text-base font-bold uppercase">Abbrechen</p>
+              </button>
+              <button
+                className={`${
+                  modalProps.type === "ban" ? "bg-red-600" : "bg-green-600"
+                } px-4 py-1 rounded-xl flex flex-col justify-center items-center`}
+                onClick={async () => {
+                  await modalProps.onConfirm();
+                  setModalProps(null);
+                }}
+              >
+                <p className="text-base font-bold uppercase">
+                  {modalRecord[modalProps.type].button}
+                </p>
+              </button>
+            </Group>
+          </Stack>
+        </Modal>
+      )}
       <div className="hidden md:flex justify-center flex-col items-center gap-4">
         <div className="w-5/6 flex justify-center">
           <div className="w-3/4 flex gap-4  flex-nowrap">
@@ -88,7 +180,10 @@ export const MapList = ({ selections, voteState, section, next, roles, firstTeam
   );
 };
 
-const generateVoteFromSectionAndMapSelection = (map: (typeof valorantMaps)[number], section: Section): Vote | undefined => {
+const generateVoteFromSectionAndMapSelection = (
+  map: (typeof valorantMaps)[number],
+  section: Section
+): Vote | undefined => {
   switch (section) {
     case "ban-first":
       return {

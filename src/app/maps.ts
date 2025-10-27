@@ -1,10 +1,10 @@
 export const valorantMaps = [
-  "sunset",
-  "lotus" /*"pearl",*/ /*"fracture"*/ /*"breeze"*/,
-  "icebox",
-  /*"abyss",*/ "bind",
-  "haven" /*"split"*/,
-  "ascent",
+  "abyss",
+  "bind",
   "corrode",
+  "haven",
+  "pearl",
+  "split",
+  "sunset",
 ] as const;
 export type ValorantMap = (typeof valorantMaps)[number];
