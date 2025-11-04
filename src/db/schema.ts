@@ -11,7 +11,7 @@ export const teams = pgTable("teams", {
 
 export const compositions = pgTable("compositions", {
   id: serial("id").primaryKey(),
-  name: varchar("name", { length: 32 }).notNull(),
+  name: varchar("name", { length: 64 }).notNull(),
   type: varchar("type", { length: 16 }).$type<"normal" | "final">().default("normal").notNull(),
   team1Id: integer("team_1_id")
     .notNull()
